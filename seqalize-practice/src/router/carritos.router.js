@@ -43,73 +43,72 @@ CarritoRouter.post("/agregarAlcarrito",async(req,res)=>{
 
 
 CarritoRouter.get('/listartienda_usario/:id_tienda/:id_user', async (req, res) => {
-  try {
-      const idTienda = req.params.id_tienda;
-      const idUser = req.params.id_user;
-      const tienda = await tiendas.findByPk(idTienda, {
-          include: [
-              {
-                  model: productos,
-                  through: { model: tiendas_productos },
-                  include: [
-                      {
-                          model: carritos,
-                          include: [
-                              {
-                                  model: users,
-                                  where: { id: idUser }
-                              }]
-                      }
-                          ]
-              },
-              {
-                  model: promociones,
-                  through: { model: tiendas_promociones }
-              }
-          ]
-      });
-      
+    try {
+        const idTienda = req.params.id_tienda;
+        const idUser = req.params.id_user;
+        const tienda = await tiendas.findByPk(idTienda, {
+            include: [
+                {
+                    model: productos,
+                    through: { model: tiendas_productos },
+                    include: [
+                        {
+                            model: carritos,
+                            include: [
+                                {
+                                    model: users,
+                                    where: { id: idUser }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    model: promociones,
+                    through: { model: tiendas_promociones }
+                }
+            ]
+        });
 
+        // Check if tienda.productos is defined and an array
+        const productosInfo = Array.isArray(tienda?.productos) ? tienda.productos.map(({ id, nombre, presentacion, barcode, tiendas_productos, Carritos }) => {
+            let cantidadCarrito = null;
+            if (Carritos && Carritos.length > 0) {
+                cantidadCarrito = Carritos[0].cantidad;
+            }
 
-      const productosInfo = Array.isArray(tienda?.productos)?tienda.productos.map(({ id, nombre, presentacion, barcode, tiendas_productos, Carritos }) => {
-          let cantidadCarrito = +1;
-          if (Carritos && Carritos.length > 0) {
-              cantidadCarrito = Carritos[0].cantidad;
-          }
+            if (cantidadCarrito != null) {
+                return {
+                    idTienda,
+                    id_producto: id,
+                    nombre,
+                    presentacion,
+                    barcode,
+                    valor: tiendas_productos.valor,
+                    cantidad: cantidadCarrito,
+                    valor_total: tiendas_productos.valor * cantidadCarrito,
+                    promociones: Array.isArray(tienda?.promociones) ? tienda.promociones.map(({ id_promocion, nombre, porcentaje }) => ({
+                        id_promocion,
+                        nombre,
+                        porcentaje,
+                        valor_promocion: tiendas_productos.valor * (100 - porcentaje) / 100
+                    })) : []
+                };
+            }
+        }) : [];
 
-          if (cantidadCarrito != +1) {
-              return {
-                  id_tienda,
-                  id_producto: id,
-                  nombre,
-                  presentacion,
-                  barcode,
-                  valor: tiendas_productos.valor,
-                  cantidad: cantidadCarrito,
-                  valor_total: tiendas_productos.valor * cantidadCarrito,
-                  promociones: Array.isArray(tienda?.promociones)?tienda.promociones.map(({ id_promocion, nombre, porcentaje }) => ({
-                      id_promocion,
-                      nombre,
-                      porcentaje,
-                      valor_promocion: tiendas_productos.valor * (100 - porcentaje) / 100
-                  })):[]
-              };
-          }
-      }):[];
-
-      
-
-      res.status(200).json({
-          "message": "Consultado correctamente",
-          "data": productosInfo
-      });
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({
-          message: 'Error al mostrar los datos de la tienda'
-      });
-  }
+        res.status(200).json({
+            "message": "Consultado correctamente",
+            "data": productosInfo
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'Error al mostrar los datos de la tienda'
+        });
+    }
 });
+
 
 
 

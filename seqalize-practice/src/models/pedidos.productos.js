@@ -1,5 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../db/db');
+const promociones = require('./promociones.model');
+const productos = require('./product.model');
+const pedidos = require('./pedidos.model');
 
 class pedidos_productos extends Model{};
 
@@ -33,7 +36,7 @@ pedidos_productos.init({
         type: DataTypes.MEDIUMINT,
         allowNull: true,
         references: {
-            model: Promocion,
+            model: promociones,
             key: 'id'
         }
     },
@@ -41,7 +44,7 @@ pedidos_productos.init({
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: Producto,
+            model: productos,
             key: 'id'
         }
     },
@@ -49,7 +52,7 @@ pedidos_productos.init({
         type: DataTypes.MEDIUMINT,
         allowNull: false,
         references: {
-            model: Pedido,
+            model: pedidos,
             key: 'id'
         }
     }

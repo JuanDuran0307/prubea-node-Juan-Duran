@@ -1,5 +1,6 @@
-const {Model, Datatypes} = require("sequelize");
+const {Model, DataTypes} = require("sequelize");
 const sequelize = require("../db/db");
+const tiendas = require("./tiendas.model");
 
 class tiendas_distancias extends Model{};
 
@@ -13,7 +14,7 @@ tiendas_distancias.init({
         type: DataTypes.SMALLINT,
         allowNull: false,
         references: {
-            model: Tienda,
+            model: tiendas,
             key: 'id'
         }
     },
@@ -31,7 +32,7 @@ tiendas_distancias.init({
     }
 }, {
     sequelize, 
-    modelName: 'TiendaDistancia', 
+    modelName: 'Tiendas_distancia', 
     tableName: 'tiendas_distancias', 
     timestamps: false 
 });

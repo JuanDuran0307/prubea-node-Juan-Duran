@@ -1,5 +1,6 @@
 const {Model, DataTypes} = require("sequelize");
 const sequelize = require("../db/db");
+const users = require("./users.model");
 
 class user_direcciones extends Model{}
 
@@ -25,7 +26,7 @@ user_direcciones.init({
         type: DataTypes.MEDIUMINT,
         allowNull: false,
         references: {
-            model: User,
+            model: users,
             key: 'id'
         }
     }

@@ -1,7 +1,8 @@
 const { Model,DataTypes } = require("sequelize")
 const sequelize= require("../db/db");
 const users = require("./users.model");
-const user_direcciones = require("./user_dirreciones.model");
+const users_direcciones = require("./users_direcciones.model")
+
 
 
 
@@ -40,7 +41,7 @@ user_clientes.init (
         type: DataTypes.MEDIUMINT,
         allowNull: true,
         references: {
-            model: UserDireccion,
+            model: users_direcciones,
             key: 'id'
         }
       },
@@ -48,7 +49,7 @@ user_clientes.init (
         type: DataTypes.MEDIUMINT,
         allowNull: false,
         references: {
-            model: User,
+            model: users,
             key: 'id'
         }
       }
