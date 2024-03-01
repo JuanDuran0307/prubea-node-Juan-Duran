@@ -20,7 +20,7 @@ app.use(morgan("dev"));
 app.get("/",(req,res)=>{
     res.send("this is express")
 })
-app.use("/market",ProductRouter,TiendasRouter,CarritoRouter),//PedidosRouter);
+app.use("/market",ProductRouter,TiendasRouter,CarritoRouter,PedidosRouter),//PedidosRouter);
 
 app.use('/market',routerPromo)
 module.exports = app;
